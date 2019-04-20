@@ -2,6 +2,7 @@ import requests
 import os
 from config import IMG_URL, TMP_DIR, MEMBERS, LEGISLATURA
 
+
 def download_and_save_img(member_id: int, legislatura_id: int):
     path = f"{TMP_DIR}/{member_id}_{legislatura_id}.jpg"
     if os.path.isfile(path):
