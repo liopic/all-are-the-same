@@ -9,6 +9,8 @@ flake8 = "*"
 [packages]
 keras = "*"
 requests = "*"
+numpy = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.6"
