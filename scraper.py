@@ -31,16 +31,24 @@ def uniform_images(path: str):
         widths.most_common()[0][0],
         heights.most_common()[0][0]
     )
-    print(f'Most_common_size: {most_common_size}')
+    print(f'Original most_common_size: {most_common_size}')
+
+    most_common_size = (
+        find_16_divisible(most_common_size[0]),
+        find_16_divisible(most_common_size[1])
+    )
+    print(f'Adapted most_common_size: {most_common_size}')
 
     for file in glob(f"{path}/*.jpg"):
         i = Image.open(file)
         if len(i.getbands()) != 3:
             i = i.convert('RGB')
-        if i.size == most_common_size:
-            continue
         resized = i.resize(most_common_size, Image.BICUBIC)
         resized.save(file, "JPEG")
+
+
+def find_16_divisible(x):
+    return int(x/16) * 16
 
 
 if __name__ == "__main__":
