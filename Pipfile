@@ -11,6 +11,7 @@ keras = "*"
 requests = "*"
 numpy = "*"
 pillow = "*"
+tensorflow = "*"
 
 [requires]
 python_version = "3.6"
