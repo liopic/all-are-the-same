@@ -8,6 +8,12 @@ from keras.layers import Input, Conv2D, Flatten, Dense
 from keras.layers import Reshape, Conv2DTranspose
 from math import ceil
 
+# Keep deterministic results
+from numpy.random import seed
+from tensorflow import set_random_seed
+seed(42)
+set_random_seed(42)
+
 
 def load_images() -> np.array:
     files = glob(f"{TMP_DIR}/*.jpg")
