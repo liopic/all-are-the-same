@@ -27,8 +27,8 @@ def load_images() -> np.array:
     return ret
 
 
-def encoder(inputs: Input, filters: List[int], latent_dimension: int,
-            kernel_size=3) -> Model:
+def create_encoder(inputs: Input, filters_sizes: List[int], latent_dimension: int,
+                   kernel_size=3) -> Model:
     x = inputs
     for filters in filters_sizes:
         x = Conv2D(filters=filters,
@@ -37,13 +37,14 @@ def encoder(inputs: Input, filters: List[int], latent_dimension: int,
                    strides=2,
                    padding='same')(x)
     x = Flatten()(x)
-    latent = Dense(latent_dim, name='latent_vector')(x)
+    latent = Dense(latent_dimension, name='latent_vector')(x)
 
     encoder = Model(inputs, latent, name='encoder')
     return encoder
 
 
-def calculate_last_conv_shape(input_shape: List[int], filters: List[int]):
+def calculate_last_conv_shape(input_shape: List[int],
+                              filters_sizes: List[int]):
     x, y, _ = input_shape
     for filters in filters_sizes:
         x, y = ceil(x/2), ceil(y/2)
@@ -52,8 +53,8 @@ def calculate_last_conv_shape(input_shape: List[int], filters: List[int]):
     return (x, y, f)
 
 
-def decoder(last_conv_shape: List[int], filters: List[int],
-            latent_dimension: int, kernel_size=3) -> Model:
+def create_decoder(last_conv_shape: List[int], filters_sizes: List[int],
+                   latent_dimension: int, kernel_size=3) -> Model:
     latent_inputs = Input(shape=(latent_dimension,), name='decoder_input')
     x = Dense(
         last_conv_shape[0] * last_conv_shape[1] * last_conv_shape[2]
@@ -75,7 +76,7 @@ def decoder(last_conv_shape: List[int], filters: List[int],
     return decoder
 
 
-if __name__ == "__main__":
+def create_and_train_autoencoder():
     X = load_images()
     input_shape = X.shape[1:]
     inputs = Input(shape=input_shape, name='encoder_input')
@@ -88,18 +89,24 @@ if __name__ == "__main__":
     assert input_shape[0] % divisible == 0, "Image x size should be divisible"
     assert input_shape[1] % divisible == 0, "Image y size should be divisible"
 
-    encoder = encoder(inputs, filters_sizes, latent_dim)
+    encoder = create_encoder(inputs, filters_sizes,
+                             latent_dim, kernel_size=kernel_size)
 
     last_conv_shape = calculate_last_conv_shape(input_shape, filters_sizes)
-    decoder = decoder(last_conv_shape, filters_sizes, latent_dim)
+    decoder = create_decoder(last_conv_shape, filters_sizes,
+                             latent_dim, kernel_size=kernel_size)
 
     autoencoder = Model(inputs, decoder(encoder(inputs)), name='autoencoder')
     autoencoder.summary()
     autoencoder.compile(loss='mse', optimizer='adam')
-    history = autoencoder.fit(X,
-                              X,
-                              epochs=10,
-                              batch_size=32)
+    autoencoder.fit(X,
+                    X,
+                    epochs=10,
+                    batch_size=32)
 
     encoder.save(f"{TMP_DIR}/encoder.h5")
     decoder.save(f"{TMP_DIR}/decoder.h5")
+
+
+if __name__ == "__main__":
+    create_and_train_autoencoder()
