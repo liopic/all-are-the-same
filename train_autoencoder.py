@@ -1,30 +1,17 @@
-from glob import glob
-from PIL import Image
-import numpy as np
+
 from typing import List
 from config import TMP_DIR
 from keras.models import Model
 from keras.layers import Input, Conv2D, Flatten, Dense
 from keras.layers import Reshape, Conv2DTranspose
 from math import ceil
+from image_utils import load_images
 
 # Keep deterministic results
 from numpy.random import seed
 from tensorflow import set_random_seed
 seed(42)
 set_random_seed(42)
-
-
-def load_images() -> np.array:
-    files = glob(f"{TMP_DIR}/*.jpg")
-    images = []
-    for file in files:
-        image_data = np.asarray(Image.open(file))
-        # normalize to range [0, 1], from [0, 255]
-        images.append(image_data.astype('float32') / 255)
-
-    ret = np.asarray(images)
-    return ret
 
 
 def create_encoder(inputs: Input, filters_sizes: List[int], latent_dimension: int,
