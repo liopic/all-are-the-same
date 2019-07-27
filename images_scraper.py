@@ -34,8 +34,8 @@ def uniform_images(path: str):
     print(f'Original most_common_size: {most_common_size}')
 
     most_common_size = (
-        find_16_divisible(most_common_size[0]),
-        find_16_divisible(most_common_size[1])
+        _find_16_divisible(most_common_size[0]),
+        _find_16_divisible(most_common_size[1])
     )
     print(f'Adapted most_common_size: {most_common_size}')
 
@@ -47,7 +47,7 @@ def uniform_images(path: str):
         resized.save(file, "JPEG")
 
 
-def find_16_divisible(x):
+def _find_16_divisible(x):
     return int(x/16) * 16
 
 
@@ -56,8 +56,8 @@ if __name__ == "__main__":
         os.mkdir(TMP_DIR)
 
     print(f'Downloading diputados images in {TMP_DIR}')
-    for member_id in range(MEMBERS+1):
-        download_and_save_img(member_id, LEGISLATURA)
+    for member_id in range(MEMBERS):
+        download_and_save_img(member_id+1, LEGISLATURA)
 
     print('Rescaling images to most common size')
     uniform_images(TMP_DIR)

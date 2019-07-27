@@ -12,6 +12,8 @@ requests = "*"
 numpy = "*"
 pillow = "*"
 tensorflow = "*"
+pandas = "*"
+beautifulsoup4 = "*"
 
 [requires]
 python_version = "3.6"
