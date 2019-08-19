@@ -5,7 +5,7 @@ LIST_URL = ("http://www.congreso.es/portal/page/portal/Congreso/Congreso/"
 
 IMG_URL = "http://www.congreso.es/wc/htdocs/web/img/diputados/%d_%d.jpg"
 TMP_DIR = "/tmp/diputados"
-INFO_CSV = "members.csv"
+INFO_CSV = "members_%d.csv"
 
-LEGISLATURA = 12
-MEMBERS = 393
+LEGISLATURA = 13
+MEMBERS = 354  # Legislatura 12 = 393, Legislatura 13 = 354

@@ -19,14 +19,17 @@ def extract_political_information(page_content: str, member_id: int):
     name = nameTag[0].text
     groupTag = html.select('p.nombre_grupo')
     group = groupTag[0].text
-    return {'id': member_id, 'name': name, 'group': group}
+    twitterTag = html.select('div.webperso_dip_imagen a[href*=twitter]')
+    twitter = twitterTag[0].attrs['href'] if len(twitterTag) else ''
+    return {'id': member_id, 'name': name, 'group': group, 'twitter': twitter}
 
 
 def save_member_info_into_csv(members):
-    with open(TMP_DIR + '/' + INFO_CSV, 'w') as csv_file:
+    with open(TMP_DIR + '/' + INFO_CSV % (LEGISLATURA), 'w') as csv_file:
         csv_writer = csv.writer(csv_file)
         for member in members:
-            csv_writer.writerow([member['id'], member['name'], member['group']])
+            csv_writer.writerow([member['id'], member['name'],
+                                member['group'], member['twitter']])
 
 
 if __name__ == "__main__":
@@ -40,7 +43,7 @@ if __name__ == "__main__":
         member = extract_political_information(page_content, member_id+1)
         members.append(member)
 
-        print(f"{member['id']}: {member['name']} from {member['group']}")
+        print(f"{member['id']}: {member['name']} from {member['group']} {member['twitter']}")
 
     print(f'Saving information to {TMP_DIR}/{INFO_CSV}')
     save_member_info_into_csv(members)
