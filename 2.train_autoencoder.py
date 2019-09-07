@@ -1,11 +1,12 @@
-
 from typing import List
-from config import TMP_DIR
+from config import TMP_DIR, LEGISLATURA
 from keras.models import Model
 from keras.layers import Input, Conv2D, Flatten, Dense
 from keras.layers import Reshape, Conv2DTranspose
+from keras.optimizers import Adam
 from math import ceil
 from image_utils import load_images
+from config import KERNEL_SIZE, FILTER_SIZES, EPOCHS, BATCH_SIZE
 
 # Keep deterministic results
 from numpy.random import seed
@@ -14,8 +15,40 @@ seed(42)
 set_random_seed(42)
 
 
-def create_encoder(inputs: Input, filters_sizes: List[int], latent_dimension: int,
-                   kernel_size=3) -> Model:
+def create_and_train_autoencoder():
+    latent_dim = 2
+    kernel_size = KERNEL_SIZE
+    filters_sizes = FILTER_SIZES
+    epochs = EPOCHS
+    batch_size = BATCH_SIZE
+
+    X = load_images()
+    input_shape = X.shape[1:]
+    inputs = Input(shape=input_shape, name='encoder_input')
+
+    divisible = 2 ** len(filters_sizes)
+    assert input_shape[0] % divisible == 0, "Image x size should be divisible"
+    assert input_shape[1] % divisible == 0, "Image y size should be divisible"
+
+    encoder = _create_encoder(inputs, filters_sizes,
+                              latent_dim, kernel_size=kernel_size)
+
+    last_conv_shape = _calculate_last_conv_shape(input_shape, filters_sizes)
+    decoder = _create_decoder(last_conv_shape, filters_sizes,
+                              latent_dim, kernel_size=kernel_size)
+
+    autoencoder = Model(inputs, decoder(encoder(inputs)), name='autoencoder')
+    autoencoder.summary()
+    optimizer = Adam(lr=0.0005)
+    autoencoder.compile(loss='mse', optimizer=optimizer)
+    autoencoder.fit(X, X, epochs=epochs, batch_size=batch_size)
+
+    encoder.save(f"{TMP_DIR}/encoder_{LEGISLATURA}.h5")
+    decoder.save(f"{TMP_DIR}/decoder_{LEGISLATURA}.h5")
+
+
+def _create_encoder(inputs: Input, filters_sizes: List[int],
+                    latent_dimension: int, kernel_size=3) -> Model:
     x = inputs
     for filters in filters_sizes:
         x = Conv2D(filters=filters,
@@ -30,8 +63,8 @@ def create_encoder(inputs: Input, filters_sizes: List[int], latent_dimension: in
     return encoder
 
 
-def calculate_last_conv_shape(input_shape: List[int],
-                              filters_sizes: List[int]):
+def _calculate_last_conv_shape(input_shape: List[int],
+                               filters_sizes: List[int]):
     x, y, _ = input_shape
     for filters in filters_sizes:
         x, y = ceil(x/2), ceil(y/2)
@@ -40,8 +73,8 @@ def calculate_last_conv_shape(input_shape: List[int],
     return (x, y, f)
 
 
-def create_decoder(last_conv_shape: List[int], filters_sizes: List[int],
-                   latent_dimension: int, kernel_size=3) -> Model:
+def _create_decoder(last_conv_shape: List[int], filters_sizes: List[int],
+                    latent_dimension: int, kernel_size=3) -> Model:
     latent_inputs = Input(shape=(latent_dimension,), name='decoder_input')
     x = Dense(
         last_conv_shape[0] * last_conv_shape[1] * last_conv_shape[2]
@@ -61,38 +94,6 @@ def create_decoder(last_conv_shape: List[int], filters_sizes: List[int],
 
     decoder = Model(latent_inputs, outputs, name='decoder')
     return decoder
-
-
-def create_and_train_autoencoder():
-    X = load_images()
-    input_shape = X.shape[1:]
-    inputs = Input(shape=input_shape, name='encoder_input')
-
-    latent_dim = 2
-    kernel_size = 5
-    filters_sizes = [32, 64, 128, 256]
-
-    divisible = 2 ** len(filters_sizes)
-    assert input_shape[0] % divisible == 0, "Image x size should be divisible"
-    assert input_shape[1] % divisible == 0, "Image y size should be divisible"
-
-    encoder = create_encoder(inputs, filters_sizes,
-                             latent_dim, kernel_size=kernel_size)
-
-    last_conv_shape = calculate_last_conv_shape(input_shape, filters_sizes)
-    decoder = create_decoder(last_conv_shape, filters_sizes,
-                             latent_dim, kernel_size=kernel_size)
-
-    autoencoder = Model(inputs, decoder(encoder(inputs)), name='autoencoder')
-    autoencoder.summary()
-    autoencoder.compile(loss='mse', optimizer='adam')
-    autoencoder.fit(X,
-                    X,
-                    epochs=10,
-                    batch_size=32)
-
-    encoder.save(f"{TMP_DIR}/encoder.h5")
-    decoder.save(f"{TMP_DIR}/decoder.h5")
 
 
 if __name__ == "__main__":

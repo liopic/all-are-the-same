@@ -43,7 +43,7 @@ if __name__ == "__main__":
         member = extract_political_information(page_content, member_id+1)
         members.append(member)
 
-        print(f"{member['id']}: {member['name']} from {member['group']} {member['twitter']}")
+        print(f"{member['id']}: {member['name']}")
 
     print(f'Saving information to {TMP_DIR}/{INFO_CSV}')
     save_member_info_into_csv(members)
