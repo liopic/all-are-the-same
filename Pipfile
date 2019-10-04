@@ -4,16 +4,16 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-flake8 = "*"
+flake8 = "~=3.7"
 
 [packages]
-keras = "*"
-requests = "*"
-numpy = "*"
-pillow = "*"
-tensorflow = "*"
-pandas = "*"
-beautifulsoup4 = "*"
+requests = "~=2.22"
+numpy = "~=1.17"
+pillow = "~=6.1"
+pandas = "~=0.25"
+beautifulsoup4 = "~=4.8"
+keras = "~=2.2.5"
+tensorflow = "~=1.9"
 
 [requires]
 python_version = "3.6"
