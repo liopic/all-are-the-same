@@ -4,6 +4,7 @@ from keras.models import Model
 from keras.layers import Input, Conv2D, Flatten, Dense
 from keras.layers import Reshape, Conv2DTranspose
 from keras.optimizers import Adam
+from keras import backend as K
 from math import ceil
 from image_utils import load_images
 from config import KERNEL_SIZE, FILTER_SIZES, EPOCHS, BATCH_SIZE
@@ -41,10 +42,14 @@ def create_and_train_autoencoder():
     autoencoder.summary()
     optimizer = Adam(lr=0.0005)
     autoencoder.compile(loss='mse', optimizer=optimizer)
-    autoencoder.fit(X, X, epochs=epochs, batch_size=batch_size)
+    history = autoencoder.fit(X, X, epochs=epochs, batch_size=batch_size)
 
-    encoder.save(f"{TMP_DIR}/encoder_{LEGISLATURA}.h5")
-    decoder.save(f"{TMP_DIR}/decoder_{LEGISLATURA}.h5")
+    encoder.save(f"{TMP_DIR}/encoder_{LEGISLATURA}-{EPOCHS}-{KERNEL_SIZE}.h5")
+    decoder.save(f"{TMP_DIR}/decoder_{LEGISLATURA}-{EPOCHS}-{KERNEL_SIZE}.h5")
+    loss_file = f"{TMP_DIR}/loss_{LEGISLATURA}-{EPOCHS}-{KERNEL_SIZE}.txt"
+    with open(loss_file, 'w') as f:
+        for loss in history.history['loss']:
+            f.write(f"{loss}\n")
 
 
 def _create_encoder(inputs: Input, filters_sizes: List[int],
@@ -97,4 +102,7 @@ def _create_decoder(last_conv_shape: List[int], filters_sizes: List[int],
 
 
 if __name__ == "__main__":
+    print("Using the following device:")
+    print(K.tensorflow_backend._get_available_gpus())
+
     create_and_train_autoencoder()
