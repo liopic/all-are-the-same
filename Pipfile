@@ -12,8 +12,7 @@ numpy = "~=1.17"
 pillow = "~=6.1"
 pandas = "~=0.25"
 beautifulsoup4 = "~=4.8"
-tensorflow-gpu = "*"
-keras = "~=2.2.5"
+tensorflow = "~=2.0"
 
 [requires]
 python_version = "3.6"

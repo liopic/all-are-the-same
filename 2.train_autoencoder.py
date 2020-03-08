@@ -1,19 +1,18 @@
 from typing import List
 from config import TMP_DIR, LEGISLATURA
-from keras.models import Model
-from keras.layers import Input, Conv2D, Flatten, Dense
-from keras.layers import Reshape, Conv2DTranspose
-from keras.optimizers import Adam
-from keras import backend as K
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Conv2D, Flatten, Dense, Reshape, Conv2DTranspose
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras import backend as K
 from math import ceil
 from image_utils import load_images
 from config import KERNEL_SIZE, FILTER_SIZES, EPOCHS, BATCH_SIZE
 
 # Keep deterministic results
 from numpy.random import seed
-from tensorflow import set_random_seed
+import tensorflow as tf
 seed(42)
-set_random_seed(42)
+tf.random.set_seed(42)
 
 
 def create_and_train_autoencoder():
@@ -103,6 +102,6 @@ def _create_decoder(last_conv_shape: List[int], filters_sizes: List[int],
 
 if __name__ == "__main__":
     print("Using the following device:")
-    print(K.tensorflow_backend._get_available_gpus())
+    print('GPU' if tf.test.is_gpu_available() else 'CPU')
 
     create_and_train_autoencoder()
