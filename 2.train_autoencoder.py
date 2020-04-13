@@ -32,10 +32,12 @@ def create_and_train_autoencoder():
 
     encoder = _create_encoder(inputs, filters_sizes,
                               latent_dim, kernel_size=kernel_size)
+    encoder.summary()
 
     last_conv_shape = _calculate_last_conv_shape(input_shape, filters_sizes)
     decoder = _create_decoder(last_conv_shape, filters_sizes,
                               latent_dim, kernel_size=kernel_size)
+    decoder.summary()
 
     autoencoder = Model(inputs, decoder(encoder(inputs)), name='autoencoder')
     autoencoder.summary()

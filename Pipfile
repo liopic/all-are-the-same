@@ -10,8 +10,8 @@ flake8 = "~=3.7"
 requests = "~=2.22"
 numpy = "~=1.17"
 pillow = "~=6.1"
-pandas = "~=0.25"
-beautifulsoup4 = "~=4.8"
+pandas = "~=0.24"
+beautifulsoup4 = "~=4.9"
 tensorflow = "~=2.0"
 
 [requires]
