@@ -40,7 +40,7 @@ docker run -t -v $(pwd):/app all-are-the-same python 2.train_autoencoder.py
 
 ## Lessons learned
 - *Keras* : Creating an autoencoder is extremely simple with Keras.
-- *Keras* : Using MSE makes decoded images too blurry, so it's better
+- *Keras* : Using MSE makes decoded images too blurry, so it'd better to use other error scoring (like perceptuals).
 - *pipenv* : Some of the Cuda libraries need by tensorflow to use a GPU are not possible to install in a virtual environment (virtualenv or pipenv), so in order to use a GPU in a virtualized environment, docker is the only easy solution.
 - *docker* : The only option to virtualize a project that uses a local GPU.
 
@@ -49,5 +49,4 @@ docker run -t -v $(pwd):/app all-are-the-same python 2.train_autoencoder.py
 - [X] Explain some lessons learned
 - [X] Use docker
 - [ ] Complete the code for the 2-dim map
-- [ ] Use python logging instead of just print
 - [ ] Try other loss functions, like perceptual ones
