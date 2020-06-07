@@ -44,7 +44,7 @@ def uniform_images(path: str):
         if len(i.getbands()) != 3:
             i = i.convert('RGB')
         resized = i.resize(most_common_size, Image.BICUBIC)
-        resized.save(f"{path}/{file}", "JPEG")
+        resized.save(file, "JPEG")
 
 
 def _find_16_divisible(x):
