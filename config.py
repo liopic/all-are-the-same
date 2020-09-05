@@ -13,4 +13,6 @@ MEMBERS = 354  # Legislatura 12 = 393, Legislatura 13 = 354
 FILTER_SIZES = [96, 256, 512, 768]
 KERNEL_SIZE = 5
 EPOCHS = 50
-BATCH_SIZE = 16
+BATCH_SIZE = 64
+
+GENERATED_IMAGES_DIR = "generated_images"

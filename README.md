@@ -48,5 +48,5 @@ docker run -t -v $(pwd):/app all-are-the-same python 2.train_autoencoder.py
 - [X] Update to tensorflow 2
 - [X] Explain some lessons learned
 - [X] Use docker
-- [ ] Complete the code for the 2-dim map
+- [X] Complete the code for the 2-dim map
 - [ ] Try other loss functions, like perceptual ones

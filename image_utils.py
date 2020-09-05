@@ -13,3 +13,8 @@ def load_images() -> np.array:
 
     ret = np.asarray(images)
     return ret
+
+def save_image(image_array, filename):
+    rgb = image_array*255
+    image = Image.fromarray(np.uint8(rgb), 'RGB')
+    image.save(filename)
