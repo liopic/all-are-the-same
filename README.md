@@ -1,6 +1,8 @@
 # All Are The Same
 
-A small project to encode Spanish politicians' pictures into 2 dimensions and build a map.
+A small project to encode Spanish politicians' pictures into 2 dimensions and build a latent map.
+
+![latent map](generated_images/latent_map.png)
 
 ## Objectives
 
@@ -49,4 +51,4 @@ docker run -t -v $(pwd):/app all-are-the-same python 2.train_autoencoder.py
 - [X] Explain some lessons learned
 - [X] Use docker
 - [X] Complete the code for the 2-dim map
-- [ ] Try other loss functions, like perceptual ones
+- [ ] Try other loss functions, like perceptual ones, to avoid blur
