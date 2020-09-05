@@ -1,4 +1,4 @@
 -i https://pypi.org/simple
 beautifulsoup4==4.9.0
 pandas==0.24.2
-pillow==6.2.2
+pillow==7.1.0
